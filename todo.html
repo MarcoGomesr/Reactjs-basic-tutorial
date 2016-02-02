@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Todo Reactjs</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<!-- CDN -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+</head>
+<body>
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-3"></div>
+		<div id="task" class="col-md-6"></div>
+		<div class="col-md-3"></div>
+	</div>
+</div>
+
+<script type="text/jsx">
+	// Create new task to our list
+	var TaskList = React.createClass({		
+		createTask: function(item){
+			return (
+				<li className="ui-state-default">
+					<div className="checkbox">
+						<label>
+							<button className="btn btn-danger" onClick={this.props.delete.bind(this, item)}>x</button>
+							{item}
+						</label>
+					</div>
+				</li>
+			);
+		},
+		render: function(){
+			return (
+				<ul id="sortable" className="list-unstyled">{ this.props.items.map( this.createTask) }</ul>
+			)
+		}
+	});	
+
+	var AppTask = React.createClass({
+		getInitialState: function(){
+			return {
+				items: ["item 1", "item 2"],
+				text: ''
+			};
+		},
+
+		delete: function(item, e) {
+			var elemens = this.state.items;
+			var indice = elemens.indexOf(item);
+			elemens.splice(indice, 1);
+			this.setState({items: elemens});
+		},
+
+		change: function(e) {
+      this.setState({text: e.target.value});
+    },
+
+		submit: function(e) {
+			e.preventDefault();
+			var nextitemss = this.state.items.concat([this.state.text]);
+			var nextText = '';
+			this.setState({items: nextitemss, text: nextText});
+		},
+
+		render: function(){
+			return(
+				<div>
+					<h3> Todo List </h3>
+					<form onSubmit={this.submit} >
+						<input className="form-control" placeholder="Add to the list" onChange={this.change} value={this.state.text} />
+				
+						<br/>
+						<button className="btn btn-success btn-block">New task</button>						
+					</form>
+					<hr/>
+					<TaskList items={this.state.items} delete={this.delete}/>
+				</div>
+			);
+		}
+	});
+
+	React.render(<AppTask />, document.getElementById('task') );
+</script>
+</body>
+</html>
